@@ -3,13 +3,16 @@ import { StyleSheet, View, Text, Button, FlatList, Pressable, Image } from 'reac
 import { useState, useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { ImageButton } from '../component/ImageButton';
+import {ActivityIndicator} from 'react-native';
 
 
 export default function ProductList({ navigation, route }) {
     const { category } = route.params;
     const [ListofProducts, setListofProducts] = useState([]);
+    const [isLoading, setLoading]=useState(false);
 
     const loadProducts = async () => {
+        setLoading(true);
         try {
             const url = 'https://fakestoreapi.com/products/category/' + category;
             const res = await fetch(url)
@@ -23,7 +26,8 @@ export default function ProductList({ navigation, route }) {
                 [{ text: 'OK', }]);
         }
         finally {
-            console.log('after fetch address')
+            setLoading(false);
+           // console.log('after fetch address')
 
         }
 
@@ -41,10 +45,13 @@ export default function ProductList({ navigation, route }) {
     return (
 
         <View style={styles.container}>
+        
             <View style={styles.Title}>
                 <Text style={{ alignSelf: 'center', justifyContent: 'center', marginTop: 5, fontSize: 35, fontWeight: '800' }}> Product List</Text>
             </View>
+        
             <View style={styles.Inner}>
+            {isLoading ?(<ActivityIndicator size='large' style={{flex:1}} color='#0000ff'/>):(
                 <FlatList
                     data={ListofProducts}
                     renderItem={({ item }) => (
@@ -63,6 +70,7 @@ export default function ProductList({ navigation, route }) {
                     )}
                     keyExtractor={(item) => item.id}
                 />
+            )}
             </View>
             <View style={{ margin: 10, flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <ImageButton text="Back" icon="backspace" width={100} fun={onBack} />

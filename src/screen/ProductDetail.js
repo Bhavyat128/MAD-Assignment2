@@ -3,16 +3,18 @@ import { StyleSheet, View, Text, Button, FlatList, Pressable, Image, ScrollView 
 import { useState, useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import { ImageButton } from '../component/ImageButton';
-
+import {ActivityIndicator} from 'react-native';
 
 export default function ProductDetails({ navigation, route }) {
     const [detailedprod, setdetailedprod] = useState({});
     const [rate, setrate] = useState({});
+    const [isLoading, setLoading]=useState(false);
 
     const isFocused = useIsFocused();
     const loadProductDetails = async () => {
+        setLoading(true);
         try {
-            console.log("Param", route.params?.id, route.params?.category)
+            //console.log("Param", route.params?.id, route.params?.category)
             const url = 'https://fakestoreapi.com/products/' + route.params?.id;
             const res = await fetch(url)
             const data = await res.json();
@@ -26,7 +28,8 @@ export default function ProductDetails({ navigation, route }) {
                 [{ text: 'OK', }]);
         }
         finally {
-            console.log('after fetch address')
+            setLoading(false);
+           // console.log('after fetch address')
 
         }
 
@@ -44,10 +47,13 @@ export default function ProductDetails({ navigation, route }) {
     return (
 
         <View style={styles.container}>
+         
             <View style={styles.Title}>
                 <Text style={{ alignSelf: 'center', justifyContent: 'center', marginTop: 5, fontSize: 35, fontWeight: '800' }}> Product List</Text>
             </View>
+       
             <View style={styles.Inner}>
+            {isLoading ?(<ActivityIndicator size='large' style={{flex:1}} color='#0000ff'/>):(
                 <ScrollView>
                     <View style={{ margin: 10, flexDirection: 'column', width: 370, borderWidth: 1, borderColor: 'steelblue', borderRadius: 10 }}>
                         <Image source={{ uri: detailedprod.image }} style={styles.imageStyle} />
@@ -67,6 +73,7 @@ export default function ProductDetails({ navigation, route }) {
                         </View>
                     </View>
                 </ScrollView>
+            )}
             </View>
         </View>
 

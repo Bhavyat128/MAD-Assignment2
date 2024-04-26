@@ -2,13 +2,16 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View, Text, Button, FlatList } from 'react-native';
 import { useState, useEffect } from 'react';
 import { useIsFocused } from '@react-navigation/native';
+import {ActivityIndicator} from 'react-native';
 
 
 export default function Categories({ navigation }) {
   const [CategoryList, setCategoryList] = useState([]);
+  const [isLoading, setLoading]=useState(false);
   const isFocused = useIsFocused();
 
   const loadCategory = async () => {
+    setLoading(true);
     try {
       const url = 'https://fakestoreapi.com/products/categories'
       const res = await fetch(url)
@@ -22,7 +25,8 @@ export default function Categories({ navigation }) {
         [{ text: 'OK', }]);
     }
     finally {
-      console.log('after fetch address')
+      setLoading(false);
+      //console.log('after fetch address')
 
     }
 
@@ -38,10 +42,13 @@ export default function Categories({ navigation }) {
   return (
 
     <View style={styles.container}>
+   
       <View style={styles.Title}>
         <Text style={{ alignSelf: 'center', justifyContent: 'center', marginTop: 5, fontSize: 35, fontWeight: '800' }}> Categories</Text>
       </View>
+
       <View style={styles.Inner}>
+      {isLoading ?(<ActivityIndicator size='large' style={{flex:1}} color='#0000ff'/>):(
         <FlatList
           data={CategoryList}
           renderItem={({ item }) => (
@@ -51,6 +58,7 @@ export default function Categories({ navigation }) {
           )}
           keyExtractor={(item) => item}
         />
+      )}
       </View>
     </View>
 
