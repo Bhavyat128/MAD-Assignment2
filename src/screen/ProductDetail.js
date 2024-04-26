@@ -49,7 +49,7 @@ export default function ProductDetails({ navigation, route }) {
         <View style={styles.container}>
          
             <View style={styles.Title}>
-                <Text style={{ alignSelf: 'center', justifyContent: 'center', marginTop: 5, fontSize: 35, fontWeight: '800' }}> Product List</Text>
+                <Text style={{ alignSelf: 'center', justifyContent: 'center', marginTop: 5, fontSize: 35, fontWeight: '800' }}> Product Details</Text>
             </View>
        
             <View style={styles.Inner}>
