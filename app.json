@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "week3",
-    "slug": "week3",
+    "name": "Fake-store",
+    "slug": "Fake-store",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

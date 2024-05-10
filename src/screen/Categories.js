@@ -1,99 +1,61 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Text, Button, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Alert, FlatList, Button, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
-import { useIsFocused } from '@react-navigation/native';
-import {ActivityIndicator} from 'react-native';
-
-
-export default function Categories({ navigation }) {
-  const [CategoryList, setCategoryList] = useState([]);
-  const [isLoading, setLoading]=useState(false);
-  const isFocused = useIsFocused();
-
-  const loadCategory = async () => {
-    setLoading(true);
-    try {
-      const url = 'https://fakestoreapi.com/products/categories'
-      const res = await fetch(url)
-      const data = await res.json();
-      setCategoryList(data);
-      // console.log("data", data);
+import { useDispatch, useSelector } from "react-redux";
+import { loadCategoryData, selectCategory } from "../redux/categorySlice";
+ 
+export default Categories = function ({ navigation }) {
+    const dispatch = useDispatch();
+    const { categoryData, loading, error } = useSelector(selectCategory);
+    useEffect(() => {
+        dispatch(loadCategoryData());
+    }, []);
+    const showProducts = (category) => {
+        navigation.navigate('ProductList', { category })
     }
-    catch (e) {
-      console.error('error fetch address ', e)
-      Alert.alert("Error", e?.message ?? "unknown error ",
-        [{ text: 'OK', }]);
-    }
-    finally {
-      setLoading(false);
-      //console.log('after fetch address')
-
-    }
-
-  }
-  const onProducts = (category) => {
-    navigation.navigate('ProductList', { category })
-  }
-  useEffect(() => {
-    if (isFocused) {
-      loadCategory();
-    }
-  }, [isFocused]);
-  return (
-
-    <View style={styles.container}>
-   
-      <View style={styles.Title}>
-        <Text style={{ alignSelf: 'center', justifyContent: 'center', marginTop: 5, fontSize: 35, fontWeight: '800' }}> Categories</Text>
-      </View>
-
-      <View style={styles.Inner}>
-      {isLoading ?(<ActivityIndicator size='large' style={{flex:1}} color='#0000ff'/>):(
-        <FlatList
-          data={CategoryList}
-          renderItem={({ item }) => (
-            <View style={{ margin: 20 }}>
-              <Button title={item} onPress={() => onProducts(item)} color="green" />
+    return (
+        <View style={[styles.container,  { flexDirection: 'column' }]}>
+            <View style={styles.header}>
+                <Text style={{ fontSize: 30, fontWeight: '700' }}>Categories</Text>
             </View>
-          )}
-          keyExtractor={(item) => item}
-        />
-      )}
-      </View>
-    </View>
-
-  );
-
-};
-
+            <View style={styles.body}>
+                {loading ? (
+                    <ActivityIndicator size="large" color="green" style={{ flex: 1 }} />
+                ) : (
+                    <FlatList
+                        data={categoryData}
+                        renderItem={({ item }) => (
+                            <View style={{ margin: 20 }}>
+                                <Button title={item} onPress={() => showProducts(item)} color="green" />
+                            </View>
+                        )}
+                        keyExtractor={(item) => item}
+                    />
+                )}
+            </View>
+        </View>
+    );
+}
+ 
 const styles = StyleSheet.create({
-  container: {
-
-    flex: 1,
-    backgroundColor: "white",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 10,
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    marginTop: 110,
-  },
-  buttonSpacer: {
-    width: 20,
-  },
-  Title: {
-    flex: 1,
-    borderWidth: 4,
-    borderColor: 'green',
-    width: 300,
-    alignSelf: 'center',
-    margin: 20,
-
-  },
-  Inner: {
-    flex: 9,
-
-  }
+    container: {
+        flex: 1,
+        padding: 0,
+        paddingTop: 0,
+        flexDirection: 'row'
+    },
+    header: {
+        flex: 1,
+        borderColor: 'green',
+        borderWidth: 2,
+        alignItems: 'center',
+        justifyContent: 'center',
+        // margin: 40,
+        borderRadius: 20,
+        marginRight: 10,
+        marginLeft: 10
+    },
+    body: {
+        flex: 8,
+    }
 });
+ 

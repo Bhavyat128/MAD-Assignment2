@@ -1,21 +1,13 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import Categories from "./src/screen/Categories";
-import ProductList from "./src/screen/ProductList";
-import ProductDetails from "./src/screen/ProductDetail";
-const Stack = createStackNavigator()
-export default function App() {
-
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Categories">
-        <Stack.Screen name="Categories" component={Categories} />
-        <Stack.Screen name="ProductList" component={ProductList} />
-        <Stack.Screen name="ProductDetails" component={ProductDetails} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-
-}
-
-
+import React from "react";
+import { Provider } from "react-redux";
+import store from "./src/redux/store";
+ 
+import Home from "./src/screen/Home";
+ 
+const App = () => (
+  <Provider store={store}>
+    <Home />
+  </Provider>
+);
+ 
+export default App;
