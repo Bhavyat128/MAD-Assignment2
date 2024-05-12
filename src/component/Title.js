@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
         width: 500,
         height: 500,
     },
-    title: {
+    header: {
         fontSize: 10,
         color: 'black',
         borderColor: 'blue',

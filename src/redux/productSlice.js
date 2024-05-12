@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchProducts } from "../service/apiService";
 // Define an initial state
 const initialState = {
-    productData: {},
+    productbody: {},
     loading: false,
     error: null,
 };
@@ -12,7 +12,7 @@ export const loadProductData = createAsyncThunk(
     async (categoryId, thunkAPI) => {
         try {
             const ret = await fetchProducts(categoryId);
-            // console.log("prooooooo",ret)
+            
             return ret;
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);

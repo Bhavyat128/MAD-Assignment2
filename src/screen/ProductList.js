@@ -1,5 +1,4 @@
 import { StyleSheet, Text, View, Alert, FlatList, Image, Pressable, ActivityIndicator } from 'react-native';
-
 import { useState, useEffect } from 'react';
 import { ImageButton } from '../component/ImageButton';
 import { useDispatch, useSelector } from "react-redux";
@@ -13,9 +12,9 @@ export default ProductList = function ({ navigation, route }) {
         dispatch(loadProductData(category));
     }, []);
     const onProductDetail = (category, id) => {
-        navigation.navigate('ProductDetail', { category: category, id: id })
+        navigation.navigate('ProductDetails', { category: category, id: id })
     }
-    const onBack = () => navigation.navigate('Category');
+    const onBack = () => navigation.navigate('Categories');
     return (
         <View style={[styles.container, { flexDirection: 'column' }]}>
             <View style={styles.header}>
@@ -81,7 +80,7 @@ const styles = StyleSheet.create({
         width: 70,
         height: 70,
         borderWidth: 1,
-        borderColor: 'powderblue',
+        borderColor: 'lightgreen',
         borderRadius: 10
     },
     footer: {

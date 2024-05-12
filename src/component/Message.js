@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
         marginTop:90,
         // textAlign:'auto',
         justifyContent: 'flex-start',
-        backgroundColor: 'powderblue',
+        backgroundColor: 'lightgreen',
         
     },
     text:{

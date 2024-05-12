@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchCategory } from "../service/apiService";
 // Define an initial state
 const initialState = {
-    categoryData: {},
+    categorybody: {},
     loading: false,
     error: null,
 };
@@ -12,7 +12,7 @@ export const loadCategoryData = createAsyncThunk(
     async (thunkAPI) => {
         try {
             const ret = await fetchCategory();
-            console.log("fetsc",ret)
+           
             return ret;
         } catch (error) {
             return thunkAPI.rejectWithValue(error.message);

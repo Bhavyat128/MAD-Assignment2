@@ -2,13 +2,13 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchProductDetailsByID } from "../service/apiService";
 // Define an initial state
 const initialState = {
-    productDetailData: {},
+    productDetailbody: {},
     rating: {},
     loading: false,
     error: null,
 };
 // Create an asynchronous thunk action
-export const loadProductDetailData = createAsyncThunk(
+export const loadproductDetailbody = createAsyncThunk(
     "loadProductDetail",
     async (productId, thunkAPI) => {
         try {
@@ -26,22 +26,22 @@ const productDetailSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(loadProductDetailData.pending, (state) => {
+            .addCase(loadproductDetailbody.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(loadProductDetailData.fulfilled, (state, action) => {
+            .addCase(loadproductDetailbody.fulfilled, (state, action) => {
                 state.loading = false;
                 state.error = null;
-                state.productDetailData = action.payload;
-                let rate = state.productDetailData;
-                console.log("printttt", rate.rating);
+                state.productDetailbody = action.payload;
+                let rate = state.productDetailbody;
+               
                 state.rating = rate.rating;
             })
-            .addCase(loadProductDetailData.rejected, (state, action) => {
+            .addCase(loadproductDetailbody.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
-                state.productDetailData = {};
+                state.productDetailbody = {};
                 state.rating = {};
             });
     },
