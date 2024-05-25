@@ -6,8 +6,8 @@ export const signIn = async (obj) => {
         const url = `${server}:${port}/users/signin`;
        
         const res = await fetch(url, {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
+            method: "POST", 
+            mode: "cors", 
             headers: {
                 "Content-Type": "application/json"
             },
@@ -42,8 +42,8 @@ export const updateSignin = async (obj) => {
         const url = `${server}:${port}/users/update`;
       
         const res = await fetch(url, {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, *cors, same-origin
+            method: "POST", 
+            mode: "cors", 
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${obj.tok}`

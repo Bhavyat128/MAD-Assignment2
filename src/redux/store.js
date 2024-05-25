@@ -5,7 +5,7 @@ import productDetailReducer from "./productDetailSlice";
 import orderReducer from './orderSlice';
 import shoppingCartReducer from "./shoppingCartSlice";
 import saveCartReducer from "./shoppingCartSlice";
-import logUserReducer from "./logUserSlice";
+import logUserReducer from "./signSlice";
 
 export const store = configureStore({
     reducer: {

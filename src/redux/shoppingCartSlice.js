@@ -22,7 +22,7 @@ export const fetchsignInUserCart = createAsyncThunk(
     }
 );
  
-export const saveUserCartDataToServer = createAsyncThunk(
+export const dataToServer = createAsyncThunk(
     "saveUserCart",
     async (data, total) => {
         try {
@@ -70,7 +70,6 @@ const shoppingCartSlice = createSlice({
             state.price = 0;
         },
         addItem(state, action) {
-            // Efficiently check for duplicate items using `some`
             const { product, total } = action.payload;
             state.total = total;
             const productExists = state.cartData.some(
@@ -87,7 +86,6 @@ const shoppingCartSlice = createSlice({
             const cost = state.cartData.reduce((total, item) => total + item.price * item.quantity, 0);
             const roundedCost = cost.toFixed(2);
             state.price = parseFloat(roundedCost);
-            // state.price = cost;
         },
         updateQuantity(state, action) {
             const { productId, newQuantity } = action.payload;
@@ -113,7 +111,6 @@ const shoppingCartSlice = createSlice({
             const cost = state.cartData.reduce((total, item) => total + item.price * item.quantity, 0);
             const roundedCost = cost.toFixed(2);
             state.price = parseFloat(roundedCost);
-            // state.price = cost;
         },
     },
     extraReducers: (builder) => {
@@ -149,8 +146,7 @@ const shoppingCartSlice = createSlice({
                 state.total = 0;
                 state.price = 0;
             })
-            // addOrUpdateCart
-            .addCase(saveUserCartDataToServer.fulfilled, (state, action) => {
+            .addCase(dataToServer.fulfilled, (state, action) => {
                 if (action.payload.status == "error") {
                     alert(action.payload.message);
                 }

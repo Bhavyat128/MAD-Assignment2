@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TextInput } from 'react-native';
 import { ImageButton } from '../component/ImageButton';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { updateUser, selectLoggedUser } from '../redux/logUserSlice';
+import { updateUser, logDelail } from '../redux/signSlice';
 import { useNavigation } from "@react-navigation/native";
  
 const initialValues = {
@@ -12,7 +12,7 @@ const initialValues = {
 }
 export default UpdateUserProfile = function () {
     const [input, setInput] = useState(initialValues);
-    const { logData, token } = useSelector(selectLoggedUser);
+    const { logData, token } = useSelector(logDelail);
     const navigation = useNavigation();
     const dispatch = useDispatch();
  

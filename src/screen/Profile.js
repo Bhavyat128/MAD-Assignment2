@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TextInput, Pressable, } from 'react-native';
 import { useState, useEffect } from 'react';
 import { ImageButton } from '../component/ImageButton';
 import { useDispatch, useSelector } from "react-redux";
-import { signInUser, signUpUser, selectLoggedUser } from '../redux/logUserSlice';
+import { signInUser, signUpUser, logDelail } from '../redux/signSlice';
 import { fetchsignInUserCart } from '../redux/shoppingCartSlice';
 import UserProfile from './UserProfile';
 import UpdateUserProfile from './UpdateUserProfile';
@@ -24,7 +24,7 @@ const LogInProfile = function ({ navigation }) {
     const [isSignup, setisSignup] = useState(false);
     const [isformSubmit, setisformSubmit] = useState(false);
     const dispatch = useDispatch();
-    const { logData, token } = useSelector(selectLoggedUser);
+    const { logData, token } = useSelector(logDelail);
     const onClear = () => {
         setInput(initialValues);
         setisformSubmit(false);

@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Alert, FlatList, Image, Pressable, ScrollView, 
 import { loadOrdersOfUser, selectOrder } from '../redux/orderSlice';
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from 'react';
-import { selectLoggedUser } from '../redux/logUserSlice';
+import { logDelail } from '../redux/signSlice';
 import { ImageButton } from '../component/ImageButton';
 import { Ionicons } from "@expo/vector-icons";
 import { useIsFocused } from '@react-navigation/native';
@@ -33,13 +33,13 @@ const cartScreen = [
     { title: 'Delivered Order', type: 'RecievedOrders', data: [], count: 0, expand: false }
 ]
 export default UserOrders = function ({ navigation }) {
-    const { logData, token } = useSelector(selectLoggedUser);
+    const { logData, token } = useSelector(logDelail);
     const { orderData, totalOrders } = useSelector(selectOrder);
     const [expand, setExpand] = useState(Caret);
     const [expandInnerId, setExpandInnerId] = useState({});
     const [counts, setCounts] = useState(totCount);
     const [fetchedOrders, cartOrders] = useState(pOrders);
-    const [outerTile, setOuter] = useState(cartScreen);
+    const [outer, setOuter] = useState(cartScreen);
     const dispatch = useDispatch();
     const isFocused = useIsFocused();
     const navigations = useNavigation();
@@ -47,7 +47,7 @@ export default UserOrders = function ({ navigation }) {
 
     const processfetchedData = () => {
 
-        let process = [...outerTile];
+        let process = [...outer];
 
         let pass = process.map((x) => {
             if (x.type == 'NewOrders') {
@@ -123,7 +123,7 @@ export default UserOrders = function ({ navigation }) {
 
 
     const onCaretChangeOuter = (type) => {
-        let change = [...outerTile];
+        let change = [...outer];
         let pass = change.map((item) => {
             if (item.type == type) {
                 item.expand = !item.expand;
@@ -139,7 +139,26 @@ export default UserOrders = function ({ navigation }) {
         (id in expandAndCollapse) ? (expandAndCollapse[id] = !expandAndCollapse[id]) : (expandAndCollapse[id] = true);
         setExpandInnerId(expandAndCollapse);
     }
-
+    const action = (updatedOrders) => {
+        let process = [...outer];
+        let pass = process.map((x) => {
+            if (x.type == 'NewOrders') {
+ 
+                x.data = updatedOrders.filter(x => x.isPaid == 0 && x.isDelivered == 0);
+                x.count = x.data.length;
+            }
+            else if (x.type == 'PaidOrders') {
+                x.data = updatedOrders.filter(x => x.isPaid != 0 && x.isDelivered == 0);
+                x.count = x.data.length
+            }
+            else {
+                x.data = updatedOrders.filter(x => x.isDelivered != 0);
+                x.count = x.data.length;
+            }
+            return x;
+        })
+        setOuter(pass);
+    }
     const payment = async (id) => {
 
         let order = orderData.find(x => x.id == id);
@@ -155,7 +174,9 @@ export default UserOrders = function ({ navigation }) {
         if (res.payload.status == "OK") {
             setOuter(cartScreen);
             processfetchedData();
-            alert(res.payload.message)
+            let orderFiltered = orderData.map(order => order.id === id ? { ...order, isPaid: 1, isDelivered: 0 } : order);
+            action(orderFiltered);
+            alert("Your Order is Paid")
         }
 
 
@@ -175,6 +196,9 @@ export default UserOrders = function ({ navigation }) {
         if (res.payload.status == "OK") {
             setOuter(cartScreen);
             processfetchedData();
+            let orderFiltered = orderData.map(order => order.id === id ? { ...order, isPaid: 1, isDelivered: 1 } : order);
+            action(orderFiltered);
+            alert("Your Order is Delivered")
         }
     }
 
@@ -186,7 +210,7 @@ export default UserOrders = function ({ navigation }) {
 
             <View style={styles.body}>
                 <FlatList
-                    data={outerTile}
+                    data={outer}
                     renderItem={({ item }) => (
                         <View>
                             <TouchableOpacity onPress={() => onCaretChangeOuter(item.type)}>

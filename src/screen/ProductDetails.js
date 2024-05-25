@@ -4,33 +4,28 @@ import { useEffect } from 'react';
 import { ImageButton } from '../component/ImageButton';
 import { useDispatch, useSelector } from "react-redux";
 import { loadproductDetailbody, selectProductDetail } from '../redux/productDetailSlice';
-import { saveUserCartDataToServer, selectCart } from '../redux/shoppingCartSlice';
-import { selectLoggedUser } from '../redux/logUserSlice';
+import { dataToServer, selectCart } from '../redux/shoppingCartSlice';
+import { logDelail } from '../redux/signSlice';
  
 export default ProductDetails = function ({ navigation, route }) {
-    const { logData, token } = useSelector(selectLoggedUser);
+    const { logData, token } = useSelector(logDelail);
     
     const dispatch = useDispatch();
     const { productDetailbody, rating, loading, error } = useSelector(selectProductDetail);
     // const { orderData } = useSelector(selectOrder);
     const { cartData } = useSelector(selectCart);
+
  
-    useEffect(() => {
-        dispatch(loadproductDetailbody(route.params?.id));
- 
-    }, []);
- 
-    const onBack = () => {
+    const goHome = () => {
         navigation.navigate('ProductList', { category: route.params?.category })
     }
-    const onAddCart = () => {
+    const addCart = () => {
         let quantities = 0;
         if (cartData.some(x => x.id == productDetailbody.id))
             quantities = cartData.find(x => x.id == productDetailbody.id).quantity;
         let tot = cartData.reduce((total, item) => total + item.quantity, 0);
-        let total = tot + 1;
         
-        const productWithQuantity = {
+        const proCount = {
             ...productDetailbody,
             quantity: quantities + 1,
             token: token
@@ -41,18 +36,22 @@ export default ProductDetails = function ({ navigation, route }) {
             (item) => item.id === productDetailbody.id
         );
         if (!productExists) {
-            load.push(productWithQuantity);
+            load.push(proCount);
         } else {
             const productIndex = load.findIndex(
                 (item) => item.id === productDetailbody.id
             );
             
-            load[productIndex] = { ...load[productIndex], "quantity": productWithQuantity.quantity };
+            load[productIndex] = { ...load[productIndex], "quantity": proCount.quantity };
         }
-        let copyLoad = load.map((item) => { return { ...item, token: token }; });
+        let filteredArray = load.map((item) => { return { ...item, token: token }; });
         
-        dispatch(saveUserCartDataToServer(copyLoad, total));
+        dispatch(dataToServer(filteredArray, tot+1));
     };
+    useEffect(() => {
+        dispatch(loadproductDetailbody(route.params?.id));
+ 
+    }, []);
     return (
         <View style={[styles.container, { flexDirection: 'column' }]}>
  
@@ -70,8 +69,8 @@ export default ProductDetails = function ({ navigation, route }) {
                                 <Text style={{ fontSize: 15, fontWeight: '700', marginTop: 10 }}>Price: $ {productDetailbody.price}</Text>
                             </View>
                             <View style={{ margin: 10, flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                                <ImageButton text="Back" icon="backspace" width={100} fun={onBack} />
-                                <ImageButton text="Add To Cart" icon="cart" width={150} fun={onAddCart} />
+                                <ImageButton text="Back" icon="backspace" width={100} fun={goHome} />
+                                <ImageButton text="Add To Cart" icon="cart" width={150} fun={addCart} />
                             </View>
                             <View style={{ margin: 10, flexDirection: 'column' }}>
                                 <Text style={{ fontSize: 18, fontWeight: '700' }}>Description:</Text>

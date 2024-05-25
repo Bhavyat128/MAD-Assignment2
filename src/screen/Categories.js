@@ -33,7 +33,7 @@ export default Categories = function ({ navigation }) {
                 )}
             </View>
             <View>
-                <Text style={{ fontSize: 15, fontWeight: '700', alignContent:'flex-end'  }}>Bhavya Thalath</Text>
+                <Text style={{ fontSize: 15, fontWeight: '700', alignContent:'flex-end'  }}>Bhavya Thalath & S5299336</Text>
                 
             </View>
         </View>

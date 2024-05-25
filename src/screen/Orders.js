@@ -1,23 +1,38 @@
 import { StyleSheet, Text, View, Alert, FlatList, Image, Pressable, ActivityIndicator } from 'react-native';
 import { ImageButton } from '../component/ImageButton';
 import { useDispatch, useSelector } from "react-redux";
-import { saveUserCartDataToServer, deleteCartItem, selectCart } from "../redux/shoppingCartSlice";
-import { selectLoggedUser } from '../redux/logUserSlice';
-import { saveNewOrderForUser } from '../redux/orderSlice';
+import { saveOrderApi } from '../redux/orderSlice';
+import { logDelail } from '../redux/signSlice';
+import { dataToServer, deleteCartItem, selectCart } from "../redux/shoppingCartSlice";
+
  
 export default Orders = function ({ navigation }) {
-    const { logData, token } = useSelector(selectLoggedUser);
+    const { logData, token } = useSelector(logDelail);
     const { cartData, total, price } = useSelector(selectCart);
     const dispatch = useDispatch();
+
+    const onCreateOrder = async () => {
+        let copyLoad = cartData.map((item) => {
+            return { ...item, totalItems: total, totalPrice: price, token: token };
+        });
+        
+        const response = await dispatch(saveOrderApi(copyLoad))
+        
+        if (response.payload && response.payload.status == "OK") {
+            let copyLoads = cartData.map((item) => {
+                return { ...item, quantity: 0, totalItems: 0, totalPrice: 0, token: token };
+            });
+            dispatch(dataToServer(copyLoads));
+        }
+    }
+
     const onAdd = (id) => {
         let quantities = 0;
         if (cartData.some(x => x.id == id))
             quantities = cartData.find(x => x.id == id).quantity;
         let tot = cartData.reduce((total, item) => total + item.quantity, 0);
-        let total = tot + 1;
-        
         let productDetailbody = cartData.find(x => x.id == id);
-        const productWithQuantity = {
+        const proCount = {
             ...productDetailbody,
             quantity: quantities + 1,
             token: token
@@ -27,16 +42,17 @@ export default Orders = function ({ navigation }) {
             (item) => item.id === id
         );
         if (!productExists) {
-            load.push(productWithQuantity);
+            load.push(proCount);
         } else {
             const productIndex = load.findIndex(
                 (item) => item.id === id
             );
-            load[productIndex] = { ...load[productIndex], "quantity": productWithQuantity.quantity };
+            load[productIndex] = { ...load[productIndex], "quantity": proCount.quantity };
         }
         let copyLoad = load.map((item) => { return { ...item, token: token }; });
-        dispatch(saveUserCartDataToServer(copyLoad, total));
+        dispatch(dataToServer(copyLoad, tot+1));
     };
+
     const onDelete = (id) => {
         let quantities = 0;
         if (cartData.some(x => x.id == id))
@@ -45,7 +61,7 @@ export default Orders = function ({ navigation }) {
         let total = tot - 1;
         
         let productDetailbody = cartData.find(x => x.id == id);
-        const productWithQuantity = {
+        const proCount = {
             ...productDetailbody,
             quantity: quantities - 1,
             token: token
@@ -54,25 +70,12 @@ export default Orders = function ({ navigation }) {
         const productIndex = load.findIndex(
             (item) => item.id === id
         );
-        load[productIndex] = { ...load[productIndex], "quantity": productWithQuantity.quantity };
+        load[productIndex] = { ...load[productIndex], "quantity": proCount.quantity };
         let copyLoad = load.map((item) => { return { ...item, token: token }; });
-        dispatch(saveUserCartDataToServer(copyLoad, total));
+        dispatch(dataToServer(copyLoad, total));
         
     };
-    const onCreateOrder = async () => {
-        let copyLoad = cartData.map((item) => {
-            return { ...item, totalItems: total, totalPrice: price, token: token };
-        });
-        
-        const response = await dispatch(saveNewOrderForUser(copyLoad))
-        
-        if (response.payload && response.payload.status == "OK") {
-            let copyLoads = cartData.map((item) => {
-                return { ...item, quantity: 0, totalItems: 0, totalPrice: 0, token: token };
-            });
-            dispatch(saveUserCartDataToServer(copyLoads));
-        }
-    }
+    
     return (
         <View style={[styles.container, { flexDirection: 'column' }]}>
             <View style={styles.header}>

@@ -22,7 +22,7 @@ export const loadOrdersOfUser = createAsyncThunk(
     }
 );
  
-export const saveNewOrderForUser = createAsyncThunk(
+export const saveOrderApi = createAsyncThunk(
     "saveNewOrder",
     async (orderDetails, thunkAPI) => {
         try {
@@ -41,7 +41,6 @@ export const updateOrdersByUser = createAsyncThunk(
     "updateOrder",
     async (orderDetails) => {
         try {
-            // passData = { ...orderDetails };
             const ret = await updateOrder(orderDetails);
             let pass = { ...ret, orderDetails };
             return pass;
@@ -99,7 +98,7 @@ const orderSlice = createSlice({
                 state.orderData = [];
                 state.totalOrders = 0
             })
-            .addCase(saveNewOrderForUser.fulfilled, (state, action) => {
+            .addCase(saveOrderApi.fulfilled, (state, action) => {
                 
                 if (action.payload.status == "OK") {
                     

@@ -83,7 +83,6 @@ const logUserSlice = createSlice({
                 state.logData = {};
                 state.token = "";
             })
-            // signUpUser
             .addCase(signUpUser.pending, (state) => {
                 state.logData = {};
                 state.token = "";
@@ -102,7 +101,6 @@ const logUserSlice = createSlice({
                 state.logData = {};
                 state.token = "";
             })
-            // updateUser
             .addCase(updateUser.fulfilled, (state, action) => {
                 if (action.payload.status == "error") {
                     alert(action.payload.message);
@@ -112,5 +110,5 @@ const logUserSlice = createSlice({
             })
     },
 });
-export const selectLoggedUser = (state) => state.logUser;
+export const logDelail = (state) => state.logUser;
 export default logUserSlice.reducer;

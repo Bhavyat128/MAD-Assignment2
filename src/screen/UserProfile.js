@@ -1,13 +1,14 @@
 import { StyleSheet, Text, View, Alert, FlatList, Image, Pressable, ActivityIndicator } from 'react-native';
 import { ImageButton } from '../component/ImageButton';
-import { useDispatch, useSelector } from "react-redux";
-import { signOutUser, selectLoggedUser } from '../redux/logUserSlice';
-import { useNavigation, NavigationActions } from "@react-navigation/native";
-import { clearCartOnLogout } from '../redux/shoppingCartSlice';
+
 import { signOutUserOrders } from '../redux/orderSlice';
+import { useDispatch, useSelector } from "react-redux";
+import { signOutUser, logDelail } from '../redux/signSlice';
+import { clearCartOnLogout } from '../redux/shoppingCartSlice';
+import { useNavigation, NavigationActions } from "@react-navigation/native";
  
 export default UserProfile = function () {
-    const { logData, token } = useSelector(selectLoggedUser);
+    const { logData, token } = useSelector(logDelail);
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const goToUpdatePage = () => {
@@ -16,7 +17,7 @@ export default UserProfile = function () {
     const resetNavigation = () => {
         navigation.dispatch(
             navigation.reset({
-                index: 0, // Set initial tab index (0 for ProductPage)
+                index: 0, 
                 routes: [
                     { name: 'ProductPage', params: { initialRouteName: 'Category' } }
                 ],
@@ -52,16 +53,12 @@ export default UserProfile = function () {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // padding: 0,
-        // paddingTop: 0,
         marginTop: 60,
         flexDirection: 'row'
     },
     header: {
         flex: 1,
-        // borderColor: 'green',
         backgroundColor: 'green',
-        // borderWidth: 4,
         borderRadius: 30,
         shadowColor: 'black',
         shadowRadius: 30,

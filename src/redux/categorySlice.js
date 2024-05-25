@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { fetchCategory } from "../service/apiService";
-// Define an initial state
+
 const initialState = {
     categorybody: {},
     loading: false,

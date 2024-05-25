@@ -10,7 +10,7 @@ import UserOrders from "./UserOrders";
 import Profile from "./Profile";
 import { useSelector } from "react-redux";
 import { selectCart } from "../redux/shoppingCartSlice";
-import { selectLoggedUser } from "../redux/logUserSlice";
+import { logDelail } from "../redux/signSlice";
 import { selectOrder } from "../redux/orderSlice";
  
 const Tabs = createBottomTabNavigator();
@@ -26,7 +26,7 @@ const ProductNavigator = () => {
 };
 export default function Home() {
   const { cartData, total } = useSelector(selectCart);
-  const { logData, token } = useSelector(selectLoggedUser);
+  const { logData, token } = useSelector(logDelail);
   const { orderData, totalOrders } = useSelector(selectOrder);
   
   return (
