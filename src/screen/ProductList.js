@@ -11,6 +11,9 @@ export default ProductList = function ({ navigation, route }) {
     useEffect(() => {
         dispatch(loadProductData(category));
     }, []);
+    const capCat = typeof category === 'string'
+        ? category.charAt(0).toUpperCase() + category.slice(1)
+        : category;
     const onProductDetail = (category, id) => {
         navigation.navigate('ProductDetails', { category: category, id: id })
     }
@@ -18,7 +21,7 @@ export default ProductList = function ({ navigation, route }) {
     return (
         <View style={[styles.container, { flexDirection: 'column' }]}>
             <View style={styles.header}>
-                <Text style={{ fontSize: 30, fontWeight: '700' }}>Products</Text>
+                <Text style={{ fontSize: 30, fontWeight: '700' }}>{capCat}</Text>
             </View>
             <View style={styles.body}>
                 {loading ? (
@@ -67,7 +70,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         // margin: 40,
-        borderRadius: 20,
+        borderRadius: 0,
         marginRight: 10,
         marginLeft: 10
     },

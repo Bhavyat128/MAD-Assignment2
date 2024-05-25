@@ -4,14 +4,15 @@ import { useEffect } from 'react';
 import { ImageButton } from '../component/ImageButton';
 import { useDispatch, useSelector } from "react-redux";
 import { loadproductDetailbody, selectProductDetail } from '../redux/productDetailSlice';
-
-import { addCartData, selectCart } from '../redux/shoppingCartSlice';
+import { saveUserCartDataToServer, selectCart } from '../redux/shoppingCartSlice';
+import { selectLoggedUser } from '../redux/logUserSlice';
  
 export default ProductDetails = function ({ navigation, route }) {
-   
+    const { logData, token } = useSelector(selectLoggedUser);
+    
     const dispatch = useDispatch();
     const { productDetailbody, rating, loading, error } = useSelector(selectProductDetail);
-    
+    // const { orderData } = useSelector(selectOrder);
     const { cartData } = useSelector(selectCart);
  
     useEffect(() => {
@@ -23,21 +24,37 @@ export default ProductDetails = function ({ navigation, route }) {
         navigation.navigate('ProductList', { category: route.params?.category })
     }
     const onAddCart = () => {
-
-        let quantities = 1;
+        let quantities = 0;
         if (cartData.some(x => x.id == productDetailbody.id))
             quantities = cartData.find(x => x.id == productDetailbody.id).quantity;
-        let add = cartData.reduce((sum, item) => sum + item.quantity, 0);
-        let sum = add + 1;
+        let tot = cartData.reduce((total, item) => total + item.quantity, 0);
+        let total = tot + 1;
         
         const productWithQuantity = {
             ...productDetailbody,
-            quantity: quantities
+            quantity: quantities + 1,
+            token: token
         };
-        dispatch(addCartData(productWithQuantity,sum));
+        let load = [...cartData];
+        
+        const productExists = load.some(
+            (item) => item.id === productDetailbody.id
+        );
+        if (!productExists) {
+            load.push(productWithQuantity);
+        } else {
+            const productIndex = load.findIndex(
+                (item) => item.id === productDetailbody.id
+            );
+            
+            load[productIndex] = { ...load[productIndex], "quantity": productWithQuantity.quantity };
+        }
+        let copyLoad = load.map((item) => { return { ...item, token: token }; });
+        
+        dispatch(saveUserCartDataToServer(copyLoad, total));
     };
     return (
-        <View style={[styles.container,  { flexDirection: 'column' }]}>
+        <View style={[styles.container, { flexDirection: 'column' }]}>
  
             <View style={styles.body}>
                 {loading ? (

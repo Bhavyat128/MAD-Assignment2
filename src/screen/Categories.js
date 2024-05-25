@@ -32,6 +32,10 @@ export default Categories = function ({ navigation }) {
                     />
                 )}
             </View>
+            <View>
+                <Text style={{ fontSize: 15, fontWeight: '700', alignContent:'flex-end'  }}>Bhavya Thalath</Text>
+                
+            </View>
         </View>
     );
 }
@@ -49,8 +53,8 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         alignItems: 'center',
         justifyContent: 'center',
-        // margin: 40,
-        borderRadius: 20,
+  
+        borderRadius: 0,
         marginRight: 10,
         marginLeft: 10
     },
