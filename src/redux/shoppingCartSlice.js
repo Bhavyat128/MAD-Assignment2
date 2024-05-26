@@ -39,23 +39,23 @@ export const dataToServer = createAsyncThunk(
         }
     }
 );
-export const clearCartOnLogout = () => {
+export const clearCart = () => {
     return {
         type: "saveCart/logout",
         payload: {},
     };
 };
  
-export const updateCartItemQuantity = (productId, newQuantity) => {
+export const cartCount = (productId, newQuantity) => {
     return {
-        type: "saveCart/updateQuantity",
+        type: "saveCart/addCount",
         payload: { productId, newQuantity },
     };
 };
  
 export const deleteCartItem = (productId) => {
     return {
-        type: "saveCart/removeItem",
+        type: "saveCart/delItem",
         payload: productId,
     };
 };
@@ -69,48 +69,90 @@ const shoppingCartSlice = createSlice({
             state.total = 0;
             state.price = 0;
         },
+        // addItem(state, action) {
+        //     const { product, total } = action.payload;
+        //     state.total = total;
+        //     const productExists = state.cartData.some(
+        //         (item) => item.id === product.id
+        //     );
+        //     if (!productExists) {
+        //         state.cartData.push(product);
+        //     } else {
+        //         const productIndex = state.cartData.findIndex(
+        //             (item) => item.id === product.id
+        //         );
+        //         state.cartData[productIndex].quantity++;
+        //     }
+        //     const cost = state.cartData.reduce((total, item) => total + item.price * item.quantity, 0);
+        //     const roundedCost = cost.toFixed(2);
+        //     state.price = parseFloat(roundedCost);
+        // },
         addItem(state, action) {
             const { product, total } = action.payload;
             state.total = total;
-            const productExists = state.cartData.some(
-                (item) => item.id === product.id
-            );
-            if (!productExists) {
+        
+            const existingProduct = state.cartData.find(item => item.id === product.id);
+        
+            if (existingProduct) {
+                existingProduct.quantity++;
+            } else {
                 state.cartData.push(product);
-            } else {
-                const productIndex = state.cartData.findIndex(
-                    (item) => item.id === product.id
-                );
-                state.cartData[productIndex].quantity++;
             }
-            const cost = state.cartData.reduce((total, item) => total + item.price * item.quantity, 0);
-            const roundedCost = cost.toFixed(2);
-            state.price = parseFloat(roundedCost);
+        
+            state.price = state.cartData
+                .reduce((total, item) => total + item.price * item.quantity, 0)
+                .toFixed(2);
         },
-        updateQuantity(state, action) {
-            const { productId, newQuantity } = action.payload;
-            const productIndex = state.cartData.findIndex(
-                (item) => item.id === productId
-            );
+        // addCount(state, action) {
+        //     const { productId, newQuantity } = action.payload;
+        //     const productIndex = state.cartData.findIndex(
+        //         (item) => item.id === productId
+        //     );
  
-            if (productIndex !== -1 && newQuantity > 0) {
-                state.cartData[productIndex].quantity = newQuantity;
-            } else {
+        //     if (productIndex !== -1 && newQuantity > 0) {
+        //         state.cartData[productIndex].quantity = newQuantity;
+        //     } else {
                 
+        //     }
+        // },
+        addCount(state, action) {
+            const { productId, newQuantity } = action.payload;
+            const product = state.cartData.find(item => item.id === productId);
+        
+            if (product && newQuantity > 0) {
+                product.quantity = newQuantity;
             }
         },
-        removeItem(state, action) {
+        // delItem(state, action) {
+        //     const productId = action.payload;
+        //     const productIndex = state.cartData.findIndex(
+        //         (item) => item.id === productId
+        //     );
+        //     state.cartData[productIndex].quantity--;
+        //     state.total--;
+        //     if (state.cartData[productIndex].quantity == 0)
+        //         state.cartData = state.cartData.filter((item) => item.id !== productId);
+        //     const cost = state.cartData.reduce((total, item) => total + item.price * item.quantity, 0);
+        //     const roundedCost = cost.toFixed(2);
+        //     state.price = parseFloat(roundedCost);
+        // },
+        delItem(state, action) {
             const productId = action.payload;
-            const productIndex = state.cartData.findIndex(
-                (item) => item.id === productId
-            );
-            state.cartData[productIndex].quantity--;
-            state.total--;
-            if (state.cartData[productIndex].quantity == 0)
-                state.cartData = state.cartData.filter((item) => item.id !== productId);
-            const cost = state.cartData.reduce((total, item) => total + item.price * item.quantity, 0);
-            const roundedCost = cost.toFixed(2);
-            state.price = parseFloat(roundedCost);
+            const productIndex = state.cartData.findIndex(item => item.id === productId);
+        
+            if (productIndex !== -1) {
+                const product = state.cartData[productIndex];
+                product.quantity--;
+                state.total--;
+        
+                if (product.quantity === 0) {
+                    state.cartData = state.cartData.filter(item => item.id !== productId);
+                }
+        
+                state.price = state.cartData
+                    .reduce((total, item) => total + item.price * item.quantity, 0)
+                    .toFixed(2);
+            }
         },
     },
     extraReducers: (builder) => {

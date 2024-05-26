@@ -4,7 +4,7 @@ import { ImageButton } from '../component/ImageButton';
 import { signOutUserOrders } from '../redux/orderSlice';
 import { useDispatch, useSelector } from "react-redux";
 import { signOutUser, logDelail } from '../redux/signSlice';
-import { clearCartOnLogout } from '../redux/shoppingCartSlice';
+import { clearCart } from '../redux/shoppingCartSlice';
 import { useNavigation, NavigationActions } from "@react-navigation/native";
  
 export default UserProfile = function () {
@@ -25,7 +25,7 @@ export default UserProfile = function () {
         );
     };
     const onLogout = () => {
-        dispatch(clearCartOnLogout());
+        dispatch(clearCart());
         dispatch(signOutUser());
         dispatch(signOutUserOrders());
         resetNavigation();
