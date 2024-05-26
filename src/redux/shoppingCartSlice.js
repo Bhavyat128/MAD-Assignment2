@@ -69,24 +69,7 @@ const shoppingCartSlice = createSlice({
             state.total = 0;
             state.price = 0;
         },
-        // addItem(state, action) {
-        //     const { product, total } = action.payload;
-        //     state.total = total;
-        //     const productExists = state.cartData.some(
-        //         (item) => item.id === product.id
-        //     );
-        //     if (!productExists) {
-        //         state.cartData.push(product);
-        //     } else {
-        //         const productIndex = state.cartData.findIndex(
-        //             (item) => item.id === product.id
-        //         );
-        //         state.cartData[productIndex].quantity++;
-        //     }
-        //     const cost = state.cartData.reduce((total, item) => total + item.price * item.quantity, 0);
-        //     const roundedCost = cost.toFixed(2);
-        //     state.price = parseFloat(roundedCost);
-        // },
+
         addItem(state, action) {
             const { product, total } = action.payload;
             state.total = total;
@@ -103,18 +86,7 @@ const shoppingCartSlice = createSlice({
                 .reduce((total, item) => total + item.price * item.quantity, 0)
                 .toFixed(2);
         },
-        // addCount(state, action) {
-        //     const { productId, newQuantity } = action.payload;
-        //     const productIndex = state.cartData.findIndex(
-        //         (item) => item.id === productId
-        //     );
- 
-        //     if (productIndex !== -1 && newQuantity > 0) {
-        //         state.cartData[productIndex].quantity = newQuantity;
-        //     } else {
-                
-        //     }
-        // },
+
         addCount(state, action) {
             const { productId, newQuantity } = action.payload;
             const product = state.cartData.find(item => item.id === productId);
@@ -123,19 +95,7 @@ const shoppingCartSlice = createSlice({
                 product.quantity = newQuantity;
             }
         },
-        // delItem(state, action) {
-        //     const productId = action.payload;
-        //     const productIndex = state.cartData.findIndex(
-        //         (item) => item.id === productId
-        //     );
-        //     state.cartData[productIndex].quantity--;
-        //     state.total--;
-        //     if (state.cartData[productIndex].quantity == 0)
-        //         state.cartData = state.cartData.filter((item) => item.id !== productId);
-        //     const cost = state.cartData.reduce((total, item) => total + item.price * item.quantity, 0);
-        //     const roundedCost = cost.toFixed(2);
-        //     state.price = parseFloat(roundedCost);
-        // },
+
         delItem(state, action) {
             const productId = action.payload;
             const productIndex = state.cartData.findIndex(item => item.id === productId);
@@ -195,14 +155,15 @@ const shoppingCartSlice = createSlice({
                 else {
                     
                     state.cartData = action.payload.filtered;
-                    const cost = state.cartData.reduce((total, item) => total + item.price * item.quantity, 0);
-                    const roundedCost = cost.toFixed(2);
-                    state.price = parseFloat(roundedCost);
-                    const tots = state.cartData.reduce((total, item) => total + item.quantity, 0);
-                    state.total = tots;
+                    state.price = state.cartData
+                    .reduce((total, item) => total + item.price * item.quantity, 0)
+                    .toFixed(2);
+        
+                state.total = state.cartData
+                    .reduce((total, item) => total + item.quantity, 0);
  
                 }
-            })
+            });
     },
 });
 export const selectCart = (state) => state.saveCart;
